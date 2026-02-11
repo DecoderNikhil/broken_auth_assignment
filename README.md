@@ -109,4 +109,5 @@ After fixing the bugs, you should be able to run the following sequence successf
 To submit your assignment:
 1.  Upload your fixed code to a GitHub repository or zip the project.
 2.  **Crucial**: Include the `success_flag` returned by the `/protected` endpoint in your submission comments or a text file.
-3.  (Optional but recommended) A short video showing the successful run of all 4 tasks.
+3.  **Proof of Work**: Upload a file (e.g. `output.txt` or screenshots) showing the successful output of all 4 curl calls.
+4.  (Optional) A short video showing the successful run.
