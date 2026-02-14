@@ -1,0 +1,16 @@
+1. Login
+$ curl -X POST http://localhost:3000/auth/login   -H "Content-Type: application/json"   -d '{"email":"nikhil9802@gmail.com","password":"password123"}'
+{"message":"OTP sent","loginSessionId":"vb5xj"}
+
+2. Verify OTP
+$ curl -c cookies.txt -X POST http://localhost:3000/auth/verify-otp   -H "Content-Type: application/json"   -d '{"loginSessionId":"vb5xj","otp":"576277"}'
+ionId":"vb5xj","otp":"576277"}'
+{"message":"OTP verified","sessionId":"vb5xj"}
+
+3. Get token
+$ curl -b cookies.txt -X POST http://localhost:3000/auth/token
+{"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5pa2hpbDk4MDJAZ21haWwuY29tIiwic2Vzc2lvbklkIjoic2Vzc2lvbl90b2tlbj12YjV4aiIsImlhdCI6MTc3MTA4ODEzMywiZXhwIjoxNzcxMDg5MDMzfQ.tZRxbVicKhDe7ZIxEPQTFXr2ln84PttvjmjdgJKzN8Y","expires_in":900}
+
+4. Access Protected Route
+$ curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5pa2hpbDk4MDJAZ21haWwuY29tIiwic2Vzc2lvbklkIjoic2Vzc2lvbl90b2tlbj12YjV4aiIsImlhdCI6MTc3MTA4ODEzMywiZXhwIjoxNzcxMDg5MDMzfQ.tZRxbVicKhDe7ZIxEPQTFXr2ln84PttvjmjdgJKzN8Y" http://localhost:3000/protected
+{"message":"Access granted","user":{"email":"nikhil9802@gmail.com","sessionId":"session_token=vb5xj","iat":1771088133,"exp":1771089033},"success_flag":"FLAG-bmlraGlsOTgwMkBnbWFpbC5jb21fQ09NUExFVEVEX0FTU0lHTk1FTlQ="}

@@ -15,13 +15,12 @@ const otpStore = {};
 // Middleware
 app.use(requestLogger);
 app.use(express.json());
-
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.json({
     challenge: "Complete the Authentication Flow",
-    instruction:
-      "Complete the authentication flow and obtain a valid access token.",
+    instruction: "Complete the authentication flow and obtain a valid access token.",
   });
 });
 
@@ -49,7 +48,7 @@ app.post("/auth/login", (req, res) => {
     // Store OTP
     otpStore[loginSessionId] = otp;
 
-    console.log(`[OTP] Session ${loginSessionId} generated`);
+    console.log(`${otp} Session ${loginSessionId} generated`);
 
     return res.status(200).json({
       message: "OTP sent",
@@ -68,9 +67,7 @@ app.post("/auth/verify-otp", (req, res) => {
     const { loginSessionId, otp } = req.body;
 
     if (!loginSessionId || !otp) {
-      return res
-        .status(400)
-        .json({ error: "loginSessionId and otp required" });
+      return res.status(400).json({ error: "loginSessionId and otp required" });
     }
 
     const session = loginSessions[loginSessionId];
@@ -100,6 +97,7 @@ app.post("/auth/verify-otp", (req, res) => {
       sessionId: loginSessionId,
     });
   } catch (error) {
+    // console.log(error);
     return res.status(500).json({
       status: "error",
       message: "OTP verification failed",
@@ -109,15 +107,13 @@ app.post("/auth/verify-otp", (req, res) => {
 
 app.post("/auth/token", (req, res) => {
   try {
-    const token = req.headers.authorization;
+    const token = req.headers.cookie;
 
     if (!token) {
-      return res
-        .status(401)
-        .json({ error: "Unauthorized - valid session required" });
+      return res.status(401).json({ error: "Unauthorized - valid session required" });
     }
 
-    const session = loginSessions[token.replace("Bearer ", "")];
+    const session = loginSessions[token.replace("session_token=", "")];
 
     if (!session) {
       return res.status(401).json({ error: "Invalid session" });
@@ -134,7 +130,7 @@ app.post("/auth/token", (req, res) => {
       secret,
       {
         expiresIn: "15m",
-      }
+      },
     );
 
     return res.status(200).json({
@@ -154,7 +150,7 @@ app.get("/protected", authMiddleware, (req, res) => {
   return res.json({
     message: "Access granted",
     user: req.user,
-    success_flag: `FLAG-${Buffer.from(req.user.email + "_COMPLETED_ASSIGNMENT").toString('base64')}`,
+    success_flag: `FLAG-${Buffer.from(req.user.email + "_COMPLETED_ASSIGNMENT").toString("base64")}`,
   });
 });
 
